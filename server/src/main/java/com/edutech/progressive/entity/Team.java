@@ -1,12 +1,15 @@
 package com.edutech.progressive.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Team {
+public class Team implements Comparable<Team> {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int teamId;
 
     private String teamName;
@@ -14,10 +17,10 @@ public class Team {
     private String ownerName;
     private int establishmentYear;
 
-    public Team() {}
+    public Team() {
+    }
 
-    public Team(int teamId, String teamName, String location,
-                String ownerName, int establishmentYear) {
+    public Team(int teamId, String teamName, String location, String ownerName, int establishmentYear) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.location = location;
@@ -65,5 +68,8 @@ public class Team {
         this.establishmentYear = establishmentYear;
     }
 
-    
+    @Override
+    public int compareTo(Team other) {
+        return this.teamName.compareToIgnoreCase(other.teamName);
+    }
 }

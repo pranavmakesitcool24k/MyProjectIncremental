@@ -1,12 +1,15 @@
 package com.edutech.progressive.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Cricketer {
+public class Cricketer implements Comparable<Cricketer> {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cricketerId;
 
     private int teamId;
@@ -22,8 +25,8 @@ public class Cricketer {
     }
 
     public Cricketer(int cricketerId, int teamId, String cricketerName, int age,
-            String nationality, int experience, String role,
-            int totalRuns, int totalWickets) {
+                     String nationality, int experience, String role,
+                     int totalRuns, int totalWickets) {
         this.cricketerId = cricketerId;
         this.teamId = teamId;
         this.cricketerName = cricketerName;
@@ -107,4 +110,8 @@ public class Cricketer {
         this.totalWickets = totalWickets;
     }
 
+    @Override
+    public int compareTo(Cricketer other) {
+        return Integer.compare(this.experience, other.experience);
+    }
 }
