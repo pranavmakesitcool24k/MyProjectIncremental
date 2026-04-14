@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Cricketer implements Comparable<Cricketer> {
@@ -12,7 +16,6 @@ public class Cricketer implements Comparable<Cricketer> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cricketerId;
 
-    private int teamId;
     private String cricketerName;
     private int age;
     private String nationality;
@@ -21,14 +24,16 @@ public class Cricketer implements Comparable<Cricketer> {
     private int totalRuns;
     private int totalWickets;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    @JsonIgnoreProperties({"cricketers", "firstTeamMatches", "secondTeamMatches", "winnerTeamMatches"})
+    private Team team;
+
     public Cricketer() {
     }
 
-    public Cricketer(int cricketerId, int teamId, String cricketerName, int age,
-                     String nationality, int experience, String role,
-                     int totalRuns, int totalWickets) {
+    public Cricketer(int cricketerId, int teamId, String cricketerName, int age, String nationality, int experience, String role, int totalRuns, int totalWickets) {
         this.cricketerId = cricketerId;
-        this.teamId = teamId;
         this.cricketerName = cricketerName;
         this.age = age;
         this.nationality = nationality;
@@ -36,6 +41,7 @@ public class Cricketer implements Comparable<Cricketer> {
         this.role = role;
         this.totalRuns = totalRuns;
         this.totalWickets = totalWickets;
+        this.team = new Team(teamId, null, null, null, 0);
     }
 
     public int getCricketerId() {
@@ -47,11 +53,20 @@ public class Cricketer implements Comparable<Cricketer> {
     }
 
     public int getTeamId() {
-        return teamId;
+        return team == null ? 0 : team.getTeamId();
     }
 
     public void setTeamId(int teamId) {
-        this.teamId = teamId;
+        if (this.team == null) this.team = new Team();
+        this.team.setTeamId(teamId);
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public String getCricketerName() {

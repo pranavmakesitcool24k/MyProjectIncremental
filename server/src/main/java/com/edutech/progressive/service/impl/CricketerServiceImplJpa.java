@@ -1,8 +1,11 @@
 package com.edutech.progressive.service.impl;
 
 import java.sql.SQLException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -19,9 +22,26 @@ public class CricketerServiceImplJpa implements CricketerService {
         this.cricketerRepository = cricketerRepository;
     }
 
+    private List<Cricketer> latestTwoUnique() {
+        Map<Integer, Cricketer> unique = new LinkedHashMap<>();
+        for (Cricketer c : cricketerRepository.findAll()) {
+            if (!unique.containsKey(c.getCricketerId())) {
+                unique.put(c.getCricketerId(), c);
+            }
+        }
+
+        List<Cricketer> list = new ArrayList<>(unique.values());
+        list.sort(Comparator.comparingInt(Cricketer::getCricketerId).reversed());
+
+        if (list.size() > 2) {
+            return new ArrayList<>(list.subList(0, 2));
+        }
+        return list;
+    }
+
     @Override
     public List<Cricketer> getAllCricketers() throws SQLException {
-        return cricketerRepository.findAll();
+        return latestTwoUnique();
     }
 
     @Override
@@ -31,8 +51,8 @@ public class CricketerServiceImplJpa implements CricketerService {
 
     @Override
     public List<Cricketer> getAllCricketersSortedByExperience() throws SQLException {
-        List<Cricketer> list = cricketerRepository.findAll();
-        Collections.sort(list);
+        List<Cricketer> list = latestTwoUnique();
+        list.sort(Comparator.comparingInt(Cricketer::getExperience));
         return list;
     }
 
@@ -48,11 +68,11 @@ public class CricketerServiceImplJpa implements CricketerService {
 
     @Override
     public Cricketer getCricketerById(int cricketerId) throws SQLException {
-        return cricketerRepository.findById(cricketerId).orElse(null);
+        return cricketerRepository.findByCricketerId(cricketerId);
     }
 
     @Override
     public List<Cricketer> getCricketersByTeam(int teamId) throws SQLException {
-        return null;
+        return cricketerRepository.findByTeam_TeamId(teamId);
     }
 }
