@@ -1,16 +1,17 @@
 package com.edutech.progressive.service;
 
-import com.edutech.progressive.entity.TicketBooking;
-
+import java.sql.SQLException;
 import java.util.List;
 
+import com.edutech.progressive.entity.TicketBooking;
+
 public interface TicketBookingService {
-    List<TicketBooking> getAllTicketBookings();
 
-    int createBooking(TicketBooking ticketBooking);
+    List<TicketBooking> getAllTicketBookings() throws SQLException;
 
-    void cancelBooking(int bookingId);
+    int createBooking(TicketBooking ticketBooking) throws SQLException;
 
-    List<TicketBooking> getBookingsByUserEmail(String email);
+    void cancelBooking(int bookingId) throws SQLException;
 
+    List<TicketBooking> getBookingsByUserEmail(String email) throws SQLException;
 }
