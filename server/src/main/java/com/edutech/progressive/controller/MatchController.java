@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.progressive.entity.Match;
+import com.edutech.progressive.exception.NoMatchesFoundException;
 import com.edutech.progressive.service.impl.MatchServiceImplJpa;
 
 @RestController
@@ -69,10 +70,12 @@ public class MatchController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Match>> getAllMatchesByStatus(@PathVariable String status) {
+    public ResponseEntity<?> getAllMatchesByStatus(@PathVariable String status) {
         try {
             return new ResponseEntity<>(matchService.getAllMatchesByStatus(status), HttpStatus.OK);
-        } catch (SQLException e) {
+        } catch (NoMatchesFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Team;
+import com.edutech.progressive.exception.TeamAlreadyExistsException;
+import com.edutech.progressive.exception.TeamDoesNotExistException;
 import com.edutech.progressive.repository.CricketerRepository;
 import com.edutech.progressive.repository.MatchRepository;
 import com.edutech.progressive.repository.TeamRepository;
@@ -35,6 +37,10 @@ public class TeamServiceImplJpa implements TeamService {
 
     @Override
     public int addTeam(Team team) throws SQLException {
+        Team existing = teamRepository.findByTeamName(team.getTeamName());
+        if (existing != null) {
+            throw new TeamAlreadyExistsException("Team already exists");
+        }
         return teamRepository.save(team).getTeamId();
     }
 
@@ -47,16 +53,35 @@ public class TeamServiceImplJpa implements TeamService {
 
     @Override
     public Team getTeamById(int teamId) throws SQLException {
-        return teamRepository.findByTeamId(teamId);
+        Team team = teamRepository.findByTeamId(teamId);
+        if (team == null) {
+            throw new TeamDoesNotExistException("Team does not exist");
+        }
+        return team;
     }
 
     @Override
     public void updateTeam(Team team) throws SQLException {
+        Team byId = teamRepository.findByTeamId(team.getTeamId());
+        if (byId == null) {
+            throw new TeamDoesNotExistException("Team does not exist");
+        }
+
+        Team sameName = teamRepository.findByTeamName(team.getTeamName());
+        if (sameName != null && sameName.getTeamId() != team.getTeamId()) {
+            throw new TeamAlreadyExistsException("Team already exists");
+        }
+
         teamRepository.save(team);
     }
 
     @Override
     public void deleteTeam(int teamId) throws SQLException {
+        Team team = teamRepository.findByTeamId(teamId);
+        if (team == null) {
+            throw new TeamDoesNotExistException("Team does not exist");
+        }
+
         if (matchRepository != null) {
             matchRepository.deleteByTeamId(teamId);
         }

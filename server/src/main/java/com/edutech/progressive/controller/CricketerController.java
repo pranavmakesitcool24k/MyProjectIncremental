@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.edutech.progressive.entity.Cricketer;
+import com.edutech.progressive.exception.TeamCricketerLimitExceededException;
 import com.edutech.progressive.service.impl.CricketerServiceImplJpa;
 
 @RestController
@@ -39,10 +40,12 @@ public class CricketerController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> addCricketer(@RequestBody Cricketer cricketer) {
+    public ResponseEntity<?> addCricketer(@RequestBody Cricketer cricketer) {
         try {
             return new ResponseEntity<>(cricketerService.addCricketer(cricketer), HttpStatus.CREATED);
-        } catch (SQLException e) {
+        } catch (TeamCricketerLimitExceededException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
