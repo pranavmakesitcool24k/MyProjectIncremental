@@ -25,7 +25,7 @@ public class MatchServiceImplJpa implements MatchService {
 
     @Override
     public Match getMatchById(int matchId) throws SQLException {
-        return matchRepository.findById(matchId).orElse(null);
+        return matchRepository.findByMatchId(matchId);
     }
 
     @Override
@@ -45,6 +45,6 @@ public class MatchServiceImplJpa implements MatchService {
 
     @Override
     public List<Match> getAllMatchesByStatus(String status) throws SQLException {
-        return null;
+        return matchRepository.findAllByStatus(status);
     }
 }

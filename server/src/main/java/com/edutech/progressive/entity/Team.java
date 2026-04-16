@@ -3,24 +3,29 @@ package com.edutech.progressive.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@Table(name = "team")
 public class Team implements Comparable<Team> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "team_id")
     private int teamId;
 
+    @Column(name = "team_name")
     private String teamName;
+
+    @Column(name = "location")
     private String location;
+
+    @Column(name = "owner_name")
     private String ownerName;
+
+    @Column(name = "establishment_year")
     private int establishmentYear;
 
     @OneToMany(mappedBy = "team")
@@ -39,8 +44,7 @@ public class Team implements Comparable<Team> {
     @JsonIgnoreProperties({"firstTeam", "secondTeam", "winnerTeam"})
     private List<Match> winnerTeamMatches = new ArrayList<>();
 
-    public Team() {
-    }
+    public Team() {}
 
     public Team(int teamId) {
         this.teamId = teamId;
@@ -54,77 +58,32 @@ public class Team implements Comparable<Team> {
         this.establishmentYear = establishmentYear;
     }
 
-    public int getTeamId() {
-        return teamId;
-    }
+    public int getTeamId() { return teamId; }
+    public void setTeamId(int teamId) { this.teamId = teamId; }
 
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
-    }
+    public String getTeamName() { return teamName; }
+    public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public String getTeamName() {
-        return teamName;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
-    }
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
 
-    public String getLocation() {
-        return location;
-    }
+    public int getEstablishmentYear() { return establishmentYear; }
+    public void setEstablishmentYear(int establishmentYear) { this.establishmentYear = establishmentYear; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public List<Cricketer> getCricketers() { return cricketers; }
+    public void setCricketers(List<Cricketer> cricketers) { this.cricketers = cricketers; }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
+    public List<Match> getFirstTeamMatches() { return firstTeamMatches; }
+    public void setFirstTeamMatches(List<Match> firstTeamMatches) { this.firstTeamMatches = firstTeamMatches; }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
+    public List<Match> getSecondTeamMatches() { return secondTeamMatches; }
+    public void setSecondTeamMatches(List<Match> secondTeamMatches) { this.secondTeamMatches = secondTeamMatches; }
 
-    public int getEstablishmentYear() {
-        return establishmentYear;
-    }
-
-    public void setEstablishmentYear(int establishmentYear) {
-        this.establishmentYear = establishmentYear;
-    }
-
-    public List<Cricketer> getCricketers() {
-        return cricketers;
-    }
-
-    public void setCricketers(List<Cricketer> cricketers) {
-        this.cricketers = cricketers;
-    }
-
-    public List<Match> getFirstTeamMatches() {
-        return firstTeamMatches;
-    }
-
-    public void setFirstTeamMatches(List<Match> firstTeamMatches) {
-        this.firstTeamMatches = firstTeamMatches;
-    }
-
-    public List<Match> getSecondTeamMatches() {
-        return secondTeamMatches;
-    }
-
-    public void setSecondTeamMatches(List<Match> secondTeamMatches) {
-        this.secondTeamMatches = secondTeamMatches;
-    }
-
-    public List<Match> getWinnerTeamMatches() {
-        return winnerTeamMatches;
-    }
-
-    public void setWinnerTeamMatches(List<Match> winnerTeamMatches) {
-        this.winnerTeamMatches = winnerTeamMatches;
-    }
+    public List<Match> getWinnerTeamMatches() { return winnerTeamMatches; }
+    public void setWinnerTeamMatches(List<Match> winnerTeamMatches) { this.winnerTeamMatches = winnerTeamMatches; }
 
     @Override
     public int compareTo(Team other) {

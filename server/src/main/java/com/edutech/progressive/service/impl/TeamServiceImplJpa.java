@@ -4,9 +4,12 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Team;
+import com.edutech.progressive.repository.CricketerRepository;
+import com.edutech.progressive.repository.MatchRepository;
 import com.edutech.progressive.repository.TeamRepository;
 import com.edutech.progressive.service.TeamService;
 
@@ -14,6 +17,12 @@ import com.edutech.progressive.service.TeamService;
 public class TeamServiceImplJpa implements TeamService {
 
     private TeamRepository teamRepository;
+
+    @Autowired(required = false)
+    private CricketerRepository cricketerRepository;
+
+    @Autowired(required = false)
+    private MatchRepository matchRepository;
 
     public TeamServiceImplJpa(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
@@ -48,6 +57,12 @@ public class TeamServiceImplJpa implements TeamService {
 
     @Override
     public void deleteTeam(int teamId) throws SQLException {
+        if (matchRepository != null) {
+            matchRepository.deleteByTeamId(teamId);
+        }
+        if (cricketerRepository != null) {
+            cricketerRepository.deleteByTeam_TeamId(teamId);
+        }
         teamRepository.deleteById(teamId);
     }
 }
