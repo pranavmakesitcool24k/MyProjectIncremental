@@ -1,15 +1,33 @@
 package com.edutech.progressive.controller;
 
-import com.edutech.progressive.dto.LoginRequest;
-import com.edutech.progressive.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import com.edutech.progressive.entity.User;
+import com.edutech.progressive.service.impl.UserLoginServiceImpl;
+
+@RestController
+@RequestMapping("/user")
 public class UserLoginController {
-    public ResponseEntity<User> registerUser(User user) {
-        return null;
+
+    private final UserLoginServiceImpl userLoginService;
+
+    @Autowired
+    public UserLoginController(UserLoginServiceImpl userLoginService) {
+        this.userLoginService = userLoginService;
     }
 
-    public ResponseEntity loginUser(LoginRequest loginRequest) {
-        return null;
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+        try {
+            User savedUser = userLoginService.createUser(user);
+            return ResponseEntity.ok(savedUser);   // ✅ must be 200
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(e.getMessage());
+        }
     }
 }
