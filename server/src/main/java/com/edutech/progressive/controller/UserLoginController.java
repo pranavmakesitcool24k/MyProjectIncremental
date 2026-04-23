@@ -23,7 +23,7 @@ public class UserLoginController {
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
             User savedUser = userLoginService.createUser(user);
-            return ResponseEntity.ok(savedUser);   // ✅ must be 200
+            return ResponseEntity.ok(savedUser);  
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
