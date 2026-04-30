@@ -1,0 +1,19 @@
+<h2>Submit Vote</h2>
+
+<form [formGroup]="voteForm" (ngSubmit)="onSubmit()">
+
+  <input type="number" placeholder="Vote ID" formControlName="voteId" />
+  <input type="email" placeholder="Email" formControlName="email" />
+  <input type="text" placeholder="Category" formControlName="category" />
+  <input type="number" placeholder="Cricketer ID" formControlName="cricketerId" />
+  <input type="number" placeholder="Team ID" formControlName="teamId" />
+
+  <br /><br />
+
+  <button type="submit">Submit</button>
+  <button type="button" (click)="resetForm()">Reset</button>
+
+</form>
+
+<p *ngIf="successMessage">{{ successMessage }}</p>
+<p *ngIf="errorMessage">{{ errorMessage }}</p>
