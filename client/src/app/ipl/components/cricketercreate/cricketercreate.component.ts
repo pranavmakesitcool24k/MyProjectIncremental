@@ -13,28 +13,32 @@ export class CricketerCreateComponent {
   successMessage = '';
   errorMessage = '';
 
-  // ✅ REQUIRED BY TEST
+
   cricketer: Cricketer | null = null;
 
   constructor(private fb: FormBuilder) {
+    
     this.cricketerForm = this.fb.group({
       cricketerId: [null, Validators.required],
       teamId: [null, Validators.required],
       cricketerName: ['', Validators.required],
       age: [null, Validators.required],
       nationality: ['', Validators.required],
-      experience: [null, Validators.required],
+     experience: [0, [Validators.required, Validators.min(0)]],
       role: ['', Validators.required],
       totalRuns: [null, Validators.required],
       totalWickets: [null, Validators.required]
     });
+
+     this.cricketerForm.get('experience')?.updateValueAndValidity();
   }
+
+  
 
   onSubmit(): void {
     if (this.cricketerForm.valid) {
       const v = this.cricketerForm.value;
 
-      // ✅ create object exactly so test can read component.cricketer
       this.cricketer = new Cricketer(
         v.cricketerId,
         v.teamId,
@@ -49,7 +53,7 @@ export class CricketerCreateComponent {
 
       console.log(this.cricketerForm.value);
 
-      // ✅ exact message expected by tests
+      
       this.successMessage = 'Cricketer created successfully!';
       this.errorMessage = '';
     } else {
