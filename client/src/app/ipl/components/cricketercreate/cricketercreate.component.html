@@ -1,0 +1,22 @@
+<h2>Create Cricketer</h2>
+
+<form [formGroup]="cricketerForm" (ngSubmit)="onSubmit()">
+
+  <input type="number" placeholder="Cricketer ID" formControlName="cricketerId" />
+  <input type="number" placeholder="Team ID" formControlName="teamId" />
+  <input type="text" placeholder="Cricketer Name" formControlName="cricketerName" />
+  <input type="number" placeholder="Age" formControlName="age" />
+  <input type="text" placeholder="Nationality" formControlName="nationality" />
+  <input type="number" placeholder="Experience" formControlName="experience" />
+  <input type="text" placeholder="Role" formControlName="role" />
+  <input type="number" placeholder="Total Runs" formControlName="totalRuns" />
+  <input type="number" placeholder="Total Wickets" formControlName="totalWickets" />
+
+  <br /><br />
+
+  <button type="submit">Submit</button>
+  <button type="button" (click)="resetForm()">Reset</button>
+</form>
+
+<p *ngIf="successMessage">{{ successMessage }}</p>
+<p *ngIf="errorMessage">{{ errorMessage }}</p>

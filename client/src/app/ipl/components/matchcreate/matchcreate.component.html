@@ -1,0 +1,21 @@
+<h2>Create Match</h2>
+
+<form [formGroup]="matchForm" (ngSubmit)="onSubmit()">
+
+  <input type="number" placeholder="Match ID" formControlName="matchId" />
+  <input type="number" placeholder="First Team ID" formControlName="firstTeamId" />
+  <input type="number" placeholder="Second Team ID" formControlName="secondTeamId" />
+  <input type="date" placeholder="Match Date" formControlName="matchDate" />
+  <input type="text" placeholder="Venue" formControlName="venue" />
+  <input type="text" placeholder="Result" formControlName="result" />
+  <input type="text" placeholder="Status" formControlName="status" />
+  <input type="number" placeholder="Winner Team ID" formControlName="winnerTeamId" />
+
+  <br /><br />
+
+  <button type="submit">Submit</button>
+  <button type="button" (click)="resetForm()">Reset</button>
+</form>
+
+<p *ngIf="successMessage">{{ successMessage }}</p>
+<p *ngIf="errorMessage">{{ errorMessage }}</p>
