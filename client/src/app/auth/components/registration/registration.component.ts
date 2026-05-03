@@ -1,24 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+//import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit {
 
-  registrationForm: FormGroup;
+  registrationForm!: FormGroup;
   successMessage = '';
   errorMessage = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {}
+
+
+  ngOnInit(): void {
     this.registrationForm = this.fb.group({
       fullName: ['', Validators.required],
-      username: ['', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9]+$')
-      ]],
+      username: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]+$')]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [
         Validators.required,
@@ -29,16 +31,25 @@ export class RegistrationComponent {
   }
 
   onSubmit(): void {
-    if (this.registrationForm.valid) {
-      console.log(this.registrationForm.value);
-      this.successMessage = 'Registration successful!';
-      this.errorMessage = '';
-      this.registrationForm.reset();
-    } else {
+    if (this.registrationForm.invalid) {
       this.errorMessage = 'Please fill out all required fields correctly.';
       this.successMessage = '';
       this.registrationForm.markAllAsTouched();
+      return;
     }
+
+    this.authService.createUser(this.registrationForm.value).subscribe({
+      next: (createdUser: any) => {
+        this.successMessage = 'Registration successful!';
+        this.errorMessage = '';
+        console.log(createdUser);
+        this.registrationForm.reset();
+      },
+      error: (err: { error: { message: string; }; }) => {
+        this.errorMessage = err?.error?.message || 'Please fill out all required fields correctly.';
+        this.successMessage = '';
+      }
+    });
   }
 
   resetForm(): void {

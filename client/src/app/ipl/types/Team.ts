@@ -16,7 +16,7 @@ export class Team {
         this.teamName = teamName;
         this.location = location;
         this.ownerName = ownerName;
-        this.establishmentYear = establishmentYear;
+        this.establishmentYear = establishmentYear; 
     }
 
     displayInfo(): void {

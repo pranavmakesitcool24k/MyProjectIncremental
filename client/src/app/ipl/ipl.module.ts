@@ -8,7 +8,7 @@ import { CricketerCreateComponent } from './components/cricketercreate/cricketer
 import { MatchCreateComponent } from './components/matchcreate/matchcreate.component';
 import { VoteComponent } from './components/vote/vote.component';
 import { TicketBookingComponent } from './components/ticketbooking/ticketbooking.component';
-
+import { IplRoutingModule } from './ipl-routing.module';
 @NgModule({
   declarations: [
     TeamCreateComponent,
@@ -20,7 +20,8 @@ import { TicketBookingComponent } from './components/ticketbooking/ticketbooking
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    IplRoutingModule
   ],
   exports: [
     TeamCreateComponent,

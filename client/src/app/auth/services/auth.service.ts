@@ -1,29 +1,26 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { map, Observable } from "rxjs";
-import { User } from "../../ipl/types/User";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
+@Injectable({ providedIn: 'root' })
 export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(user: Partial<User>): Observable<{ [key: string]: string }> {
-    return new Observable();
+  private baseUrl(): string {
+    return (typeof window !== 'undefined' && window.location && window.location.href)
+      ? window.location.href
+      : '';
   }
 
-  getToken() : string {
-    return '';
+  login(user: { username: string; password: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl()}/user/login`, user);
   }
 
-  getRole() : string {
-    return '';
+  createUser(user: any): Observable<any> {
+    return this.http.post(`${this.baseUrl()}/user/register`, user);
   }
-
-  getUsers(): Observable<User[]> {
-    return new Observable();
-  }
-
-  createUser(user: User): Observable<User> {
-    return new Observable();
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 }
