@@ -1,0 +1,34 @@
+<h2>Create Team</h2>
+
+<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+
+  <label>Team ID</label>
+  <input type="number" formControlName="teamId" />
+  <div *ngIf="teamForm.get('teamId')?.touched && teamForm.get('teamId')?.invalid">Team id cannot be null.</div>
+
+  <label>Team Name</label>
+  <input type="text" formControlName="teamName" />
+  <div *ngIf="teamForm.get('teamName')?.touched && teamForm.get('teamName')?.invalid">Team name must not contain special characters.</div>
+
+  <label>Location</label>
+  <input type="text" formControlName="location" />
+
+  <label>Owner Name</label>
+  <input type="text" formControlName="ownerName" />
+  <div *ngIf="teamForm.get('ownerName')?.touched && teamForm.get('ownerName')?.invalid">Owner name must be at least 2 characters.</div>
+
+  <label>Establishment Year</label>
+  <input type="number" formControlName="establishmentYear" />
+  <div *ngIf="teamForm.get('establishmentYear')?.touched && teamForm.get('establishmentYear')?.invalid">
+    Establishment year must be between 1900 and current year.
+  </div>
+
+  <br /><br />
+
+  <button type="submit" [disabled]="teamForm.invalid">Submit</button>
+  <a routerLink="/ipl/dashboard">Go to Dashboard</a>
+
+</form>
+
+<p *ngIf="successMessage">{{ successMessage }}</p>
+<p *ngIf="errorMessage">{{ errorMessage }}</p>

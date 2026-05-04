@@ -3,18 +3,32 @@
 <form [formGroup]="matchForm" (ngSubmit)="onSubmit()">
 
   <input type="number" placeholder="Match ID" formControlName="matchId" />
-  <input type="number" placeholder="First Team ID" formControlName="firstTeamId" />
-  <input type="number" placeholder="Second Team ID" formControlName="secondTeamId" />
-  <input type="date" placeholder="Match Date" formControlName="matchDate" />
+
+  <select formControlName="firstTeamId">
+    <option [ngValue]="null">First Team</option>
+    <option *ngFor="let t of teams" [value]="t.teamId">{{ t.teamName }}</option>
+  </select>
+
+  <select formControlName="secondTeamId">
+    <option [ngValue]="null">Second Team</option>
+    <option *ngFor="let t of teams" [value]="t.teamId">{{ t.teamName }}</option>
+  </select>
+
+  <input type="date" formControlName="matchDate" />
   <input type="text" placeholder="Venue" formControlName="venue" />
   <input type="text" placeholder="Result" formControlName="result" />
   <input type="text" placeholder="Status" formControlName="status" />
-  <input type="number" placeholder="Winner Team ID" formControlName="winnerTeamId" />
+
+  <select formControlName="winnerTeamId">
+    <option [ngValue]="null">Winner Team</option>
+    <option *ngFor="let t of teams" [value]="t.teamId">{{ t.teamName }}</option>
+  </select>
 
   <br /><br />
 
   <button type="submit">Submit</button>
-  <button type="button" (click)="resetForm()">Reset</button>
+  <a routerLink="/ipl/dashboard">Go to Dashboard</a>
+
 </form>
 
 <p *ngIf="successMessage">{{ successMessage }}</p>

@@ -1,0 +1,9 @@
+<nav class="nav">
+  <a routerLink="/ipl/dashboard" class="brand">IPL</a>
+
+  <a *ngIf="role !== 'USER'" routerLink="/ipl/team/create">Add New Team</a>
+  <a *ngIf="role !== 'USER'" routerLink="/ipl/cricketer/create">Add New Cricketer</a>
+  <a *ngIf="role !== 'USER'" routerLink="/ipl/match/create">Add New Match</a>
+
+  <button class="logout" (click)="logout()">Logout</button>
+</nav>

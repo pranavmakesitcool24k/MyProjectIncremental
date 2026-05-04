@@ -3,11 +3,20 @@
 <form [formGroup]="cricketerForm" (ngSubmit)="onSubmit()">
 
   <input type="number" placeholder="Cricketer ID" formControlName="cricketerId" />
-  <input type="number" placeholder="Team ID" formControlName="teamId" />
+  <div *ngIf="cricketerForm.get('cricketerId')?.touched && cricketerForm.get('cricketerId')?.invalid">Required</div>
+
+  <select formControlName="teamId">
+    <option [ngValue]="null">Select Team</option>
+    <option *ngFor="let t of teams" [value]="t.teamId">{{ t.teamName }}</option>
+  </select>
+  <div *ngIf="cricketerForm.get('teamId')?.touched && cricketerForm.get('teamId')?.invalid">Team is required</div>
+
   <input type="text" placeholder="Cricketer Name" formControlName="cricketerName" />
   <input type="number" placeholder="Age" formControlName="age" />
   <input type="text" placeholder="Nationality" formControlName="nationality" />
   <input type="number" placeholder="Experience" formControlName="experience" />
+  <div *ngIf="cricketerForm.get('experience')?.touched && cricketerForm.get('experience')?.invalid">Experience must be non-negative</div>
+
   <input type="text" placeholder="Role" formControlName="role" />
   <input type="number" placeholder="Total Runs" formControlName="totalRuns" />
   <input type="number" placeholder="Total Wickets" formControlName="totalWickets" />
@@ -15,7 +24,8 @@
   <br /><br />
 
   <button type="submit">Submit</button>
-  <button type="button" (click)="resetForm()">Reset</button>
+  <a routerLink="/ipl/dashboard">Go to Dashboard</a>
+
 </form>
 
 <p *ngIf="successMessage">{{ successMessage }}</p>

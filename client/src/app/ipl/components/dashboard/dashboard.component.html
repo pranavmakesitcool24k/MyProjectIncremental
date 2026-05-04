@@ -1,0 +1,59 @@
+<app-navbar></app-navbar>
+
+<div *ngIf="role !== 'ADMIN'">
+  <h3>You are not authorized to view Admin Dashboard.</h3>
+</div>
+
+<div *ngIf="role === 'ADMIN'">
+  <h2>Admin Dashboard</h2>
+
+  <h3>Teams</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Location</th><th>Owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of teams">
+        <td>{{ t.teamId }}</td>
+        <td>{{ t.teamName }}</td>
+        <td>{{ t.location }}</td>
+        <td>{{ t.ownerName }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Cricketers</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Age</th><th>Team</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of cricketers">
+        <td>{{ c.cricketerId }}</td>
+        <td>{{ c.cricketerName }}</td>
+        <td>{{ c.age }}</td>
+        <td>{{ c.team?.teamName || c.teamId }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Matches</h3>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th><th>Date</th><th>Venue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of matches">
+        <td>{{ m.matchId }}</td>
+        <td>{{ m.matchDate | date:'dd-MMM-yyyy' }}</td>
+        <td>{{ m.venue }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

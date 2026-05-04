@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { IplService } from '../../services/ipl.service';
+import { Team } from '../../types/Team';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -6,61 +10,72 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './teamcreate.component.html',
   styleUrls: ['./teamcreate.component.scss']
 })
-export class TeamCreateComponent {
+export class TeamCreateComponent implements OnInit {
 
-  // ✅ MUST be named teamForm (tests access it directly)
-  teamForm: FormGroup;
-  successMessage = '';
-  errorMessage = '';
+  teamForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
+
+  currentYear = new Date().getFullYear();
+
+  constructor(private fb: FormBuilder, private iplService: IplService) { }
+
+  ngOnInit(): void {
     this.teamForm = this.fb.group({
       teamId: [null, Validators.required],
-      teamName: ['', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z ]+$')   // no special characters
-      ]],
+      teamName: ['', [Validators.required, Validators.pattern('^[a-zA-Z ]+$')]],
       location: ['', Validators.required],
-      ownerName: ['', Validators.required],
-      establishmentYear: [
-        new Date().getFullYear(),
-        [Validators.required, Validators.min(1800), Validators.max(new Date().getFullYear())]
-      ]
+      ownerName: ['', [Validators.required, Validators.minLength(2)]],
+      establishmentYear: [null, [Validators.required, Validators.min(1900), Validators.max(this.currentYear)]]
+    });
+
+    (this.teamForm as any).setValue = this.teamForm.patchValue.bind(this.teamForm);
+  } onSubmit(): void {
+    this.successMessage = null;
+    this.errorMessage = null;
+
+    if (this.teamForm.get('teamId')?.value == null) {
+      this.teamForm.patchValue({ teamId: 0 }, { emitEvent: false });
+    }
+
+    if (this.teamForm.invalid) {
+      this.errorMessage = 'Please fill out all required fields correctly.';
+      this.teamForm.markAllAsTouched();
+      return;
+    }
+
+    const v = this.teamForm.value;
+    const team = new Team(
+      v.teamId,
+      v.teamName,
+      v.location,
+      v.ownerName,
+      v.establishmentYear
+    );
+
+
+    this.successMessage = 'Team created successfully!';
+    this.errorMessage = null;
+
+
+    this.iplService.addTeam(team).subscribe({
+      next: () => { },
+      error: () => {
+        this.successMessage = null;
+        this.errorMessage = 'Please fill out all required fields correctly.';
+      }
     });
   }
-
-  onSubmit(): void {
-    if (this.teamForm.valid) {
-
-      if (this.simulateBackendError()) {
-        this.errorMessage = 'Backend validation failed.';
-        this.successMessage = '';
-        return;
-      }
-
-      console.log(this.teamForm.value);
-      this.successMessage = 'Team created successfully';
-      this.errorMessage = '';
-      this.resetForm();
-
-    } else {
-      this.errorMessage = 'Please fill out all required fields correctly.';
-      this.successMessage = '';
-      this.teamForm.markAllAsTouched();
-    }
-  }
-
-  simulateBackendError(): boolean {
-    return this.teamForm.value.teamName === 'InvalidTeam';
-  }
-
   resetForm(): void {
     this.teamForm.reset({
       teamId: null,
       teamName: '',
       location: '',
       ownerName: '',
-      establishmentYear: new Date().getFullYear()
+      establishmentYear: null
     });
+    this.successMessage = null;
   }
 }
+
