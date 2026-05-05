@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IplService } from '../../services/ipl.service';
+import { Team } from '../../types/Team';
+import { Cricketer } from '../../types/Cricketer';
 import { Vote } from '../../types/Vote';
 
 @Component({
@@ -7,56 +10,81 @@ import { Vote } from '../../types/Vote';
   templateUrl: './vote.component.html',
   styleUrls: ['./vote.component.scss']
 })
-export class VoteComponent {
+export class VoteComponent implements OnInit {
 
-  voteForm: FormGroup;
-  successMessage = '';
-  errorMessage = '';
+  voteForm!: FormGroup;
+
+  teams: Team[] = [];
+  cricketers: Cricketer[] = [];
+
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   vote: Vote | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private iplService: IplService) { }
+
+  ngOnInit(): void {
     this.voteForm = this.fb.group({
-      voteId: [null, Validators.required],
+      voteId: [null],
       email: ['', [Validators.required, Validators.email]],
       category: ['', Validators.required],
-      cricketerId: [null, Validators.required],
-      teamId: [null, Validators.required]
+
+
+      team: [null],
+      cricketer: [null],
+
+
+      teamId: [null],
+      cricketerId: [null]
     });
   }
 
+  loadTeams(): void {
+    this.iplService.getAllTeams().subscribe(data => this.teams = data || []);
+  }
+
+  loadCricketers(): void {
+    this.iplService.getAllCricketers().subscribe(data => this.cricketers = data || []);
+  }
+
   onSubmit(): void {
-    if (this.voteForm.valid) {
-      const v = this.voteForm.value;
+    this.successMessage = null;
+    this.errorMessage = null;
 
-      this.vote = new Vote(
-        v.voteId,
-        v.email,
-        v.category,
-        v.cricketerId,
-        v.teamId
-      );
-
-      console.log(this.voteForm.value);
-
-     
-      this.successMessage = 'Vote submitted successfully!';
-      this.errorMessage = '';
-
-      this.voteForm.reset({
-        voteId: null,
-        email: '',
-        category: '',
-        cricketerId: null,
-        teamId: null
-      });
-
-    } else {
-     
+    if (this.voteForm.invalid) {
       this.errorMessage = 'Please fill out all required fields correctly.';
-      this.successMessage = '';
-      this.voteForm.markAllAsTouched();
+      return;
     }
+
+    const v = this.voteForm.value;
+
+    this.vote = new Vote(
+      v.voteId,
+      v.email,
+      v.category,
+      v.cricketer?.cricketerId ?? null,
+      v.team?.teamId ?? null
+    );
+
+    this.iplService.createVote(this.vote).subscribe({
+      next: () => {
+
+        this.successMessage = 'Vote casted successfully!';
+        this.errorMessage = null;
+        this.voteForm.reset({
+          voteId: null,
+          email: '',
+          category: '',
+          team: null,
+          cricketer: null
+        });
+      },
+      error: () => {
+        this.errorMessage = 'Please fill out all required fields correctly.';
+        this.successMessage = null;
+      }
+    });
   }
 
   resetForm(): void {
@@ -64,12 +92,11 @@ export class VoteComponent {
       voteId: null,
       email: '',
       category: '',
-      cricketerId: null,
-      teamId: null
+      team: null,
+      cricketer: null
     });
-
     this.vote = null;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.successMessage = null;
+    this.errorMessage = null;
   }
 }

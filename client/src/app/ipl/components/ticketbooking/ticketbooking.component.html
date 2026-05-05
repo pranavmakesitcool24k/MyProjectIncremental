@@ -2,16 +2,19 @@
 
 <form [formGroup]="ticketBookingForm" (ngSubmit)="onSubmit()">
 
-  <input type="number" placeholder="Booking ID" formControlName="bookingId" />
   <input type="email" placeholder="Email" formControlName="email" />
-  <input type="number" placeholder="Match ID" formControlName="matchId" />
+
+  <select formControlName="match">
+    <option [ngValue]="null">Select Match</option>
+    <option *ngFor="let m of matches" [ngValue]="m">
+      {{ m.matchId }} - {{ m.venue }}
+    </option>
+  </select>
+
   <input type="number" placeholder="Number Of Tickets" formControlName="numberOfTickets" />
 
-  <br /><br />
-
-  <button type="submit">Book Tickets</button>
+  <button type="submit">Book</button>
   <button type="button" (click)="resetForm()">Reset</button>
-
 </form>
 
 <p *ngIf="successMessage">{{ successMessage }}</p>
