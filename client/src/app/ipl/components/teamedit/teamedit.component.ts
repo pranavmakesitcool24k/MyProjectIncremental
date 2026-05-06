@@ -5,17 +5,15 @@ import { Team } from '../../types/Team';
 
 @Component({
   selector: 'app-team-edit',
-  template: '',  
+  templateUrl: './teamedit.component.html',
+  styleUrls: ['./teamedit.component.scss']
 })
 export class TeamEditComponent implements OnInit {
 
- 
   teamForm!: FormGroup;
+  teamId!: number;
 
-  constructor(
-    private fb: FormBuilder,
-    private iplService: IplService
-  ) {}
+  constructor(private fb: FormBuilder, private iplService: IplService) {}
 
   ngOnInit(): void {
     this.teamForm = this.fb.group({
@@ -26,26 +24,18 @@ export class TeamEditComponent implements OnInit {
     });
   }
 
- 
-  loadTeamDetails(teamId: number): void {
-    this.iplService.getTeamById(teamId).subscribe((team: Team) => {
-      this.teamForm.patchValue({
-        teamName: team.teamName,
-        location: team.location,
-        ownerName: team.ownerName,
-        establishmentYear: team.establishmentYear
-      });
+  loadTeamDetails(id: number): void {
+    this.teamId = id;
+    this.iplService.getTeamById(id).subscribe(team => {
+      this.teamForm.patchValue(team);
     });
   }
 
-   
   onSubmit(): void {
-    if (this.teamForm.invalid) {
-      return;
-    }
+    if (this.teamForm.invalid) return;
 
     const updatedTeam: Team = {
-      teamId: 0 as any,  
+      teamId: this.teamId,
       ...this.teamForm.value
     };
 

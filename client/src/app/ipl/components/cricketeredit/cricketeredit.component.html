@@ -1,0 +1,8 @@
+<form [formGroup]="cricketerForm" (ngSubmit)="onSubmit()">
+  <input formControlName="cricketerName" />
+  <input formControlName="age" />
+  <input formControlName="nationality" />
+  <input formControlName="experience" />
+  <input formControlName="role" />
+  <button type="submit">Update</button>
+</form>

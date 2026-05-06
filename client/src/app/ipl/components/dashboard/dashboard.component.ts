@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IplService } from '../../services/ipl.service';
 import { Team } from '../../types/Team';
 import { Cricketer } from '../../types/Cricketer';
 import { Match } from '../../types/Match';
+import { Vote } from '../../types/Vote';
 import { TicketBooking } from '../../types/TicketBooking';
 
 @Component({
@@ -13,60 +13,44 @@ import { TicketBooking } from '../../types/TicketBooking';
 })
 export class DashboardComponent implements OnInit {
 
+  role: string | null = null;
+
   teams: Team[] = [];
   cricketers: Cricketer[] = [];
   matches: Match[] = [];
+  votes: Vote[] = [];
+  bookings: TicketBooking[] = [];
 
-  emailForm!: FormGroup;
-  ticketsBooked: TicketBooking[] = [];
-
-  constructor(private iplService: IplService, private fb: FormBuilder) { }
+  constructor(private iplService: IplService) {}
 
   ngOnInit(): void {
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-
-    this.loadTeams();
-    this.loadCricketers();
-    this.loadMatches();
+    this.role = localStorage.getItem('role');
+    this.loadAdminData();
   }
+
   loadAdminData(): void {
-    this.loadTeams();
-    this.loadCricketers();
-    this.loadMatches();
+    this.iplService.getAllTeams().subscribe(t => this.teams = t || []);
+    this.iplService.getAllCricketers().subscribe(c => this.cricketers = c || []);
+    this.iplService.getAllMatches().subscribe(m => this.matches = m || []);
+    this.iplService.getAllVotes().subscribe(v => this.votes = v || []);
+    this.iplService.getAllTicketBookings().subscribe(b => this.bookings = b || []);
   }
 
-  loadTeams(): void {
-    this.iplService.getAllTeams().subscribe(data => this.teams = data || []);
-  }
-
-  loadCricketers(): void {
-    this.iplService.getAllCricketers().subscribe(data => this.cricketers = data || []);
-  }
-
-  loadMatches(): void {
-    this.iplService.getAllMatches().subscribe(data => this.matches = data || []);
-  }
-
-  deleteTeam(teamId: number): void {
-    const confirmDelete = window.confirm('Are you sure you want to delete this team?');
-
-    if (!confirmDelete) {
-      return;
+  deleteTeam(id: number): void {
+    if (window.confirm('Confirm delete team?')) {
+      this.iplService.deleteTeam(id).subscribe(() => this.loadAdminData());
     }
-
-    this.iplService.deleteTeam(teamId).subscribe(() => {
-      this.loadTeams();
-    });
   }
 
-  onSubmitEmail(): void {
-    if (this.emailForm.invalid) return;
+  deleteCricketer(id: number): void {
+    if (window.confirm('Confirm delete cricketer?')) {
+      this.iplService.deleteCricketer(id).subscribe(() => this.loadAdminData());
+    }
+  }
 
-    const email = this.emailForm.value.email;
-    this.iplService.getBookingsByUserEmail(email).subscribe(data => {
-      this.ticketsBooked = data || [];
-    });
+  deleteMatch(id: number): void {
+    if (window.confirm('Confirm delete match?')) {
+      this.iplService.deleteMatch(id).subscribe(() => this.loadAdminData());
+    }
   }
 }

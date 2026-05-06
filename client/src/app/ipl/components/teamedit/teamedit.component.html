@@ -1,0 +1,7 @@
+<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+  <input formControlName="teamName" />
+  <input formControlName="location" />
+  <input formControlName="ownerName" />
+  <input formControlName="establishmentYear" />
+  <button type="submit">Update</button>
+</form>
